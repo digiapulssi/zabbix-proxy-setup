@@ -24,7 +24,7 @@ To modify proxy configuration:
 3. Create and run new proxy docker container: `./start-proxy.sh`
 
 The docker container created is named zabbix-proxy by default. Different container
-name can be given as argument to start and stop scripts as argument.
+name can be given to start and stop scripts as argument.
 
 The docker container version used is alpine-latest. This can be overridden by
 giving second argument to start script.
@@ -38,14 +38,18 @@ giving second argument to start script.
 This setup script unpacks ODBC driver into configuration structure and generates
 ODBC driver configuration in zabbix/odbcinst.ini.
 
-Obtain suitable ODBC driver package for 64-bit Linux from: http://www-01.ibm.com/support/docview.wss?uid=swg21418043
+Obtain suitable ODBC driver archive for 64-bit Linux from: http://www-01.ibm.com/support/docview.wss?uid=swg21418043
 
-Driver package should begin with version number (e.g. v10.1fp6_linuxx64_odbc_cli.tar.gz).
+Driver archive should begin with version number (e.g. v10.1fp6_linuxx64_odbc_cli.tar.gz).
+
+Connecting directly to some editions of DB2 requires DB2 Connect license which
+can only be obtained from DB2 Connect installation. See the driver download page
+for details.
 
 1. Setup driver by running `./setup-db2-odbc.sh <driver-archive>`
 2. Configure database connections in driver's cfg folder `zabbix/odbc/db2/<version>/clidriver/cfg`. See example below.
 3. Configure ODBC datasources in `zabbix/odbc.ini`
-4. Copy DB2 Connect license file to `zabbix/odbc/db2/<version>/clidriver/license` folder
+4. (Optional) Copy DB2 Connect license file to `zabbix/odbc/db2/<version>/clidriver/license` folder.
 
 NOTE: Running install multiple times for same driver will generate duplicate
 sections in odbcinst.ini. DON'T run setup multiple times for same driver.
@@ -88,4 +92,4 @@ necessary environment variables to env.list used in container startup. Script
 must run as root since created PSK key file must have special permissions setup.
 
 1. Run `sudo ./setup-psk.sh` to setup PSK key and identity for proxy
-2. Configure same PSK key and identity on Zabbix server
+2. Configure the same PSK key and identity on Zabbix server
