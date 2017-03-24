@@ -34,3 +34,4 @@ touch zabbix/odbc.ini
 
 echo "ZBX_HOSTNAME=${HOSTNAME}" >env.list
 echo "ZBX_SERVER_HOST=${SERVER_HOST}" >>env.list
+echo "ZBX_CONFIGFREQUENCY=300" >>env.list
