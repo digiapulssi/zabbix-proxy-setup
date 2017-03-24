@@ -2,22 +2,26 @@
 
 set -e
 
+CONTAINER_VERSION=`cat zabbix/container.version`
+
 if [ "$1" == "-help" ]; then
   echo "Usage: $(basename $0) [ <container-name> [ <container-version> ] ]"
   echo
-  echo "Default for container name is 'zabbix-proxy' and default version is 'alpine-latest'"
+  echo "Default for container name is 'zabbix-proxy' and version is '${CONTAINER_VERSION}'"
   echo
   exit 0
 fi
 
 DIR=`realpath $(dirname $0)`
 NAME=${1:-zabbix-proxy}
-ZABBIX_VERSION=${2:-alpine-latest}
+CONTAINER_VERSION=${2:-${CONTAINER_VERSION}}
 
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
   echo "Container with name '${NAME}' already exists. Stop and remove old container before creating new one."
   exit 1
 fi
+
+echo "Starting container [${NAME}] using image version [${CONTAINER_VERSION}]."
 
 docker run \
   -v ${DIR}/zabbix/odbcinst.ini:/etc/odbcinst.ini \
@@ -34,4 +38,4 @@ docker run \
   -v ${DIR}/zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca \
   --name ${NAME} \
   --restart=always \
-  -d zabbix/zabbix-proxy-sqlite3:${ZABBIX_VERSION}
+  -d zabbix/zabbix-proxy-sqlite3:${CONTAINER_VERSION}

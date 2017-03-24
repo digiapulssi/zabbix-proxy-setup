@@ -32,6 +32,8 @@ safe_mkdir zabbix/ssl/ssl_ca
 touch zabbix/odbcinst.ini
 touch zabbix/odbc.ini
 
+echo "alpine-latest" >zabbix/container.version
+
 echo "ZBX_HOSTNAME=${HOSTNAME}" >env.list
 echo "ZBX_SERVER_HOST=${SERVER_HOST}" >>env.list
 echo "ZBX_CONFIGFREQUENCY=300" >>env.list

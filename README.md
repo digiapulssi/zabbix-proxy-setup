@@ -11,6 +11,10 @@ and all those are added to container by the proxy start script. Start script
 also adds odbc subdirectory to /var/lib/zabbix/odbc and ODBC configuration
 files to /etc to the container to configure database drivers.
 
+Initialization script defines default container version to start in file
+zabbix/container.version as alpine-latest. Setup scripts may modify this to
+avoid compatibility issues.
+
 To setup Zabbix proxy:
 
 1. Initialize proxy configuration structure: `./init-config.sh`.
@@ -26,8 +30,8 @@ To modify proxy configuration:
 The docker container created is named zabbix-proxy by default. Different container
 name can be given to start and stop scripts as argument.
 
-The docker container version used is alpine-latest. This can be overridden by
-giving second argument to start script.
+The docker container version is read from zabbix/container.version. This can be
+overridden by giving second argument to start script.
 
 ## Setup scripts
 
@@ -53,6 +57,10 @@ for details.
 
 NOTE: Running install multiple times for same driver will generate duplicate
 sections in odbcinst.ini. DON'T run setup multiple times for same driver.
+
+NOTE: The driver has dependencies to gcc and will not work on alpine based
+image. To fix this setup script sets the container default version to
+ubuntu-latest.
 
 #### DB2 ODBC Configuration Example
 
@@ -84,6 +92,27 @@ pwd=db2inst1-pwd
 [sample]
 Driver=db2_v101
 ```
+
+#### Troubleshooting Connection Issues
+
+Connection to server from container can be tested using isql within container:
+
+```
+[zabbix-proxy-setup]$docker exec -ti zabbix-proxy /bin/bash
+root@67832464215f:/var/lib/zabbix# isql -v sample db2inst1
++---------------------------------------+
+| Connected!                            |
+|                                       |
+| sql-statement                         |
+| help [tablename]                      |
+| quit                                  |
+|                                       |
++---------------------------------------+
+SQL> quit
+```
+
+The isql command reports descriptive error if there are connection configuration
+issues or connecting to database fails.
 
 ### TLS PSK Connection Setup
 
