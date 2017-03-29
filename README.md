@@ -117,8 +117,7 @@ issues or connecting to database fails.
 ### TLS PSK Connection Setup
 
 The setup script generates PSK key in zabbix/ssl/keys/zabbix_proxy.psk and adds
-necessary environment variables to env.list used in container startup. Script
-must run as root since created PSK key file must have special permissions setup.
+necessary environment variables to env.list used in container startup.
 
 1. Run `sudo ./setup-psk.sh` to setup PSK key and identity for proxy
 2. Configure the same PSK key and identity on Zabbix server
