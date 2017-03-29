@@ -6,14 +6,8 @@ function opt_replace {
   grep -q "^$1" "$3" && sed -i "s|^$1.*|$1=$2|" "$3" || echo "$1=$2" >>"$3"
 }
 
-if [ "$USER" != "root" ]; then
-  echo "This script must be run as root because it has to manage permissions of the PSK key file."
-  exit 1
-fi
-
 PSK_IDENTITY=PSK_001
-PSK_FILE=zabbix/ssl/keys/zabbix_proxy.psk
-ZABBIX_UID=100
+PSK_FILE=zabbix_proxy.psk
 
 # Obtain PSK identity
 read -p "Enter PSK identity [${PSK_IDENTITY}]: " input
@@ -29,11 +23,11 @@ if [ "${PSK_KEY}" == "" ]; then
 fi
 
 # Check for PSK file
-if [ -e "${PSK_FILE}" ]; then
+if [ -e "zabbix/enc/${PSK_FILE}" ]; then
   read -p "Old PSK key file exists - remove [y/N]?" -n 1 -r
   echo
   if [[ "$REPLY" =~ ^[yY]$ ]]; then
-    rm "${PSK_FILE}"
+    rm "zabbix/enc/${PSK_FILE}"
   else
     echo "PSK setup terminated."
     exit 0
@@ -41,10 +35,9 @@ if [ -e "${PSK_FILE}" ]; then
 fi
 
 # Create PSK file
-echo "${PSK_KEY}" >"${PSK_FILE}"
-chown ${ZABBIX_UID} "${PSK_FILE}" && chmod 600 "${PSK_FILE}"
+echo "${PSK_KEY}" >"zabbix/enc/${PSK_FILE}"
 
 # Setup environment options
 opt_replace ZBX_TLSCONNECT psk env.list
 opt_replace ZBX_TLSPSKIDENTITY "${PSK_IDENTITY}" env.list
-opt_replace ZBX_TLSPSKFILE "/var/lib/zabbix/ssl/keys/zabbix_proxy.psk" env.list
+opt_replace ZBX_TLSPSKFILE "${PSK_FILE}" env.list

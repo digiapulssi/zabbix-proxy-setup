@@ -15,6 +15,7 @@ fi
 DIR=`realpath $(dirname $0)`
 NAME=${1:-zabbix-proxy}
 CONTAINER_VERSION=${2:-${CONTAINER_VERSION}}
+PSK_FILE=zabbix/enc/zabbix_proxy.psk
 
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
   echo "Container with name '${NAME}' already exists. Stop and remove old container before creating new one."
@@ -37,5 +38,11 @@ docker run \
   -v ${DIR}/zabbix/ssl/keys:/var/lib/zabbix/ssl/keys \
   -v ${DIR}/zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca \
   --name ${NAME} \
+  --env-file env.list \
   --restart=always \
   -d zabbix/zabbix-proxy-sqlite3:${CONTAINER_VERSION}
+
+if [ -e "${PSK_FILE}" ]; then
+  docker exec ${NAME} chown zabbix:zabbix "/var/lib/${PSK_FILE}"
+  docker exec ${NAME} chmod 600 "/var/lib/${PSK_FILE}"
+fi
