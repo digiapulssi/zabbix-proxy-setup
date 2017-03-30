@@ -16,6 +16,7 @@ DIR=`realpath $(dirname $0)`
 NAME=${1:-zabbix-proxy}
 CONTAINER_VERSION=${2:-${CONTAINER_VERSION}}
 PSK_FILE=zabbix/enc/zabbix_proxy.psk
+START_CMD="/run_zabbix_component.sh proxy sqlite3"
 
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
   echo "Container with name '${NAME}' already exists. Stop and remove old container before creating new one."
@@ -23,6 +24,12 @@ if [ "$(docker ps -aq -f name=${NAME})" ]; then
 fi
 
 echo "Starting container [${NAME}] using image version [${CONTAINER_VERSION}]."
+
+if [ -e "${PSK_FILE}" ]; then
+  COMMAND="chown zabbix:zabbix \"/var/lib/${PSK_FILE}\"; chmod 600 \"/var/lib/${PSK_FILE}\"; ${START_CMD}"
+else
+  COMMAND="${START_CMD}"
+fi
 
 docker run \
   -v ${DIR}/zabbix/odbcinst.ini:/etc/odbcinst.ini \
@@ -37,12 +44,9 @@ docker run \
   -v ${DIR}/zabbix/ssl/certs:/var/lib/zabbix/ssl/certs \
   -v ${DIR}/zabbix/ssl/keys:/var/lib/zabbix/ssl/keys \
   -v ${DIR}/zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca \
+  -p 10051:10051 \
   --name ${NAME} \
   --env-file env.list \
-  --restart=always \
-  -d zabbix/zabbix-proxy-sqlite3:${CONTAINER_VERSION}
-
-if [ -e "${PSK_FILE}" ]; then
-  docker exec ${NAME} chown zabbix:zabbix "/var/lib/${PSK_FILE}"
-  docker exec ${NAME} chmod 600 "/var/lib/${PSK_FILE}"
-fi
+  --entrypoint=/bin/bash \
+  -d zabbix/zabbix-proxy-sqlite3:${CONTAINER_VERSION} \
+  -c "${COMMAND}"
