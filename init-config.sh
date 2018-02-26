@@ -37,3 +37,4 @@ echo "alpine-latest" >zabbix/container.version
 echo "ZBX_HOSTNAME=${HOSTNAME}" >env.list
 echo "ZBX_SERVER_HOST=${SERVER_HOST}" >>env.list
 echo "ZBX_CONFIGFREQUENCY=300" >>env.list
+echo "ZBX_CACHESIZE=120M" >>env.list
