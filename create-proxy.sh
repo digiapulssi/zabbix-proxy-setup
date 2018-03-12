@@ -3,6 +3,10 @@
 set -e
 
 CONTAINER_VERSION=`cat zabbix/container.version`
+CONTAINER_IMAGE=`cat zabbix/container.image`
+if [ -z "$CONTAINER_IMAGE" ]; then
+  CONTAINER_IMAGE="zabbix/zabbix-proxy-sqlite3"
+fi
 
 if [ "$1" == "-help" ]; then
   echo "Usage: $(basename $0) [ <container-name> [ <container-version> ] ]"
@@ -16,14 +20,14 @@ DIR=`realpath $(dirname $0)`
 NAME=${1:-zabbix-proxy}
 CONTAINER_VERSION=${2:-${CONTAINER_VERSION}}
 PSK_FILE=zabbix/enc/zabbix_proxy.psk
-START_CMD="/run_zabbix_component.sh proxy sqlite3"
+START_CMD="docker-entrypoint.sh"
 
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
   echo "Container with name '${NAME}' already exists. Stop and remove old container before creating new one."
   exit 1
 fi
 
-echo "Starting container [${NAME}] using image version [${CONTAINER_VERSION}]."
+echo "Creating container [${NAME}] using image [${CONTAINER_IMAGE}:${CONTAINER_VERSION}]."
 
 if [ -e "${PSK_FILE}" ]; then
   COMMAND="chown zabbix:zabbix \"/var/lib/${PSK_FILE}\"; chmod 600 \"/var/lib/${PSK_FILE}\"; ${START_CMD}"
@@ -31,7 +35,7 @@ else
   COMMAND="${START_CMD}"
 fi
 
-docker run \
+docker create \
   --restart=always \
   -v ${DIR}/zabbix/odbcinst.ini:/etc/odbcinst.ini \
   -v ${DIR}/zabbix/odbc.ini:/etc/odbc.ini \
@@ -49,5 +53,5 @@ docker run \
   --name ${NAME} \
   --env-file env.list \
   --entrypoint=/bin/bash \
-  -d zabbix/zabbix-proxy-sqlite3:${CONTAINER_VERSION} \
+  ${CONTAINER_IMAGE}:${CONTAINER_VERSION} \
   -c "${COMMAND}"

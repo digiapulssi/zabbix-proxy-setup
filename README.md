@@ -7,7 +7,7 @@ execute scripts as needed.
 
 Initialization script creates subdirectories for all volume mounts supported by
 [zabbix-proxy-sqllite3](https://hub.docker.com/r/zabbix/zabbix-proxy-sqlite3/)
-and all those are added to container by the proxy start script. Start script
+and all those are added to container by `create-proxy.sh` script. The script
 also adds odbc subdirectory to /var/lib/zabbix/odbc and ODBC configuration
 files to /etc to the container to configure database drivers.
 
@@ -19,23 +19,40 @@ To setup Zabbix proxy:
 
 1. Initialize proxy configuration structure: `./init-config.sh`.
 2. Setup proxy configuration by running necessary setup scripts or manually setting up files
-3. Create and run proxy docker container: `./start-proxy.sh`
+3. Create proxy docker container: `./create-proxy.sh`
+4. Start proxy docker container: `docker start zabbix-proxy`
 
 To modify proxy configuration:
 
-1. Stop and destroy container: `./stop-proxy.sh`
+1. Stop and destroy container: `./remove-proxy.sh`
 2. Update proxy configuration by running necessary setup scripts or manually setting up files
-3. Create and run new proxy docker container: `./start-proxy.sh`
+3. Create and run new proxy docker container: `./create-proxy.sh` and `docker start zabbix-proxy`
 
 The docker container created is named zabbix-proxy by default. Different container
-name can be given to start and stop scripts as argument.
+name can be given to create and remove scripts as argument.
 
 The docker container version is read from zabbix/container.version. This can be
-overridden by giving second argument to start script.
+overridden by giving second argument to `create-proxy.sh` script.
 
 ## Setup scripts
 
 *NOTE: Running setup scripts while proxy container is running is not guaranteed to be safe.*
+
+### TLS PSK Connection Setup
+
+The setup script generates PSK key in zabbix/ssl/keys/zabbix_proxy.psk and adds
+necessary environment variables to env.list used in container startup.
+
+1. Run `sudo ./setup-psk.sh` to setup PSK key and identity for proxy
+2. Configure the same PSK key and identity on Zabbix server
+
+### Zabbix PROXY SQlite Database ODBC Data Source Setup
+
+The setup script configures ODBC data source to use for accessing Zabbix Proxy SQLite database
+
+1. Run `./setup-sqlite-odbc.sh`
+
+The data source will be available as `zabbixproxy` and can be used with database monitor items in Zabbix.
 
 ### IBM DB2 ODBC Driver Setup
 
@@ -114,10 +131,3 @@ SQL> quit
 The isql command reports descriptive error if there are connection configuration
 issues or connecting to database fails.
 
-### TLS PSK Connection Setup
-
-The setup script generates PSK key in zabbix/ssl/keys/zabbix_proxy.psk and adds
-necessary environment variables to env.list used in container startup.
-
-1. Run `sudo ./setup-psk.sh` to setup PSK key and identity for proxy
-2. Configure the same PSK key and identity on Zabbix server
