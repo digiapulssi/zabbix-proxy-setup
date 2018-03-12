@@ -8,7 +8,7 @@ Description = ODBC for SQLite
 Driver      = /usr/local/lib/libsqlite3odbc.so' >> zabbix/odbcinst.ini
 
 echo '[zabbixproxy]
-Description=My SQLite test database
+Description=Zabbix Proxy SQLite database
 Driver=SQLite
 Database=/var/lib/zabbix/zabbix_proxy_db' >> zabbix/odbc.ini
 
