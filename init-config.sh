@@ -14,7 +14,16 @@ if [[ ${REPLY} =~ ^[nN]$ ]]; then
   read -p "Enter proxy hostname: " HOSTNAME
 fi
 
-read -p "Enter Zabbix server hostname: " SERVER_HOST
+read -p "Active proxy (Y/n)?" -n 1 -r
+echo
+if [[ ${REPLY} =~ ^[nN]$ ]]; then
+  # Passive proxy
+  echo "Configuring passive proxy"
+  PASSIVE_PROXY="1"
+else
+  read -p "Enter Zabbix server hostname: " SERVER_HOST
+
+fi
 
 safe_mkdir zabbix
 safe_mkdir zabbix/enc
@@ -35,6 +44,12 @@ touch zabbix/odbc.ini
 echo "alpine-latest" >zabbix/container.version
 
 echo "ZBX_HOSTNAME=${HOSTNAME}" >env.list
-echo "ZBX_SERVER_HOST=${SERVER_HOST}" >>env.list
+if [ -z "$PASSIVE_PROXY" ]; then
+  echo "ZBX_SERVER_HOST=${SERVER_HOST}" >>env.list
+else
+  echo "ZBX_PROXYMODE=1" >>env.list
+fi
 echo "ZBX_CONFIGFREQUENCY=300" >>env.list
 echo "ZBX_CACHESIZE=120M" >>env.list
+echo "ZBX_STARTHTTPPOLLERS=10" >>env.list
+

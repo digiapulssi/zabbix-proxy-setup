@@ -39,5 +39,6 @@ echo "${PSK_KEY}" >"zabbix/enc/${PSK_FILE}"
 
 # Setup environment options
 opt_replace ZBX_TLSCONNECT psk env.list
+opt_replace ZBX_TLSACCEPT psk env.list
 opt_replace ZBX_TLSPSKIDENTITY "${PSK_IDENTITY}" env.list
 opt_replace ZBX_TLSPSKFILE "${PSK_FILE}" env.list
