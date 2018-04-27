@@ -36,7 +36,7 @@ else
 fi
 
 docker create \
-  --restart=always \
+  --restart=unless-stopped \
   -v ${DIR}/zabbix/odbcinst.ini:/etc/odbcinst.ini \
   -v ${DIR}/zabbix/odbc.ini:/etc/odbc.ini \
   -v ${DIR}/zabbix/odbc:/var/lib/zabbix/odbc \
