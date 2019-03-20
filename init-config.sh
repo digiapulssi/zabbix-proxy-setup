@@ -22,7 +22,7 @@ if [[ ${REPLY} =~ ^[nN]$ ]]; then
   PASSIVE_PROXY="1"
 else
   read -p "Enter Zabbix server hostname: " SERVER_HOST
-
+  read -p "Enter Zabbix server port: " SERVER_PORT
 fi
 
 safe_mkdir zabbix
@@ -46,6 +46,7 @@ echo "alpine-latest" >zabbix/container.version
 echo "ZBX_HOSTNAME=${HOSTNAME}" >env.list
 if [ -z "$PASSIVE_PROXY" ]; then
   echo "ZBX_SERVER_HOST=${SERVER_HOST}" >>env.list
+  echo "ZBX_SERVER_PORT=${SERVER_PORT}" >>env.list
 else
   echo "ZBX_PROXYMODE=1" >>env.list
 fi
@@ -53,3 +54,7 @@ echo "ZBX_CONFIGFREQUENCY=300" >>env.list
 echo "ZBX_CACHESIZE=120M" >>env.list
 echo "ZBX_STARTHTTPPOLLERS=10" >>env.list
 echo "ZBX_TIMEOUT=30" >>env.list
+echo "ZBX_JAVAGATEWAY_ENABLE=true" >>env.list
+echo "ZBX_JAVAGATEWAYPORT=10052" >>env.list
+echo "ZBX_STARTJAVAPOLLERS=20" >>env.list
+echo "ZBX_STARTPOLLERSUNREACHABLE=20" >>env.list
