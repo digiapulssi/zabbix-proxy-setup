@@ -19,15 +19,16 @@ read -p "Enter TLSKey: " TLS_Key
 # Obtain TLSCA
 read -p "Enter TLSCA: " TLS_CA
 
-# Check for existing files and replacing with new one if wanted
-# Check CA_FILE and replace with new one if ch
+# Check for existing files and replacing with new one if chosen so
+# Check CA_FILE and replace with new one if chosen
 if [ -e "zabbix/ssl/ssl_ca/${CA_FILE}" ]; then
   read -p "Old CA_FILE exists - overwrite [y/N]?" -n 1 -r
   echo
   if [[ "$REPLY" =~ ^[yY]$ ]]; then
     rm "zabbix/ssl/ssl_ca/${CA_FILE}"
-    # Create CA file
+    # Create CA file and add CA to enviromental variables
     echo "${TLS_CA}" >"zabbix/ssl/ssl_ca/${CA_FILE}"
+    opt_replace ZBX_TLSCAFILE "${TLS_CA}" env.list
   else
     echo "Using old CA_FILE."
   fi
@@ -38,14 +39,15 @@ else
   opt_replace ZBX_TLSCAFILE "${TLS_CA}" env.list
 fi
 
-# Check KEY_FILE
+# Check KEY_FILE and replace with new one if chosen
 if [ -e "zabbix/ssl/keys/${KEY_FILE}" ]; then
   read -p "Old KEY_FILE exists - overwrite [y/N]?" -n 1 -r
   echo
   if [[ "$REPLY" =~ ^[yY]$ ]]; then
     rm "zabbix/ssl/keys/${KEY_FILE}"
-    # Create Key file
+    # Create Key file and add Key to enviromental variables
     echo "${TLS_Key}" >"zabbix/ssl/keys/${KEY_FILE}"
+    opt_replace ZBX_TLSKEYFILE "${TLS_Key}" env.list
   else
     echo "Using old KEY_FILE."
   fi
@@ -56,14 +58,15 @@ else
   opt_replace ZBX_TLSKEYFILE "${TLS_Key}" env.list
 fi
 
-# Check CERT_FILE
+# Check CERT_FILE and replace with new one if chosen
 if [ -e "zabbix/ssl/certs/${CERT_FILE}" ]; then
   read -p "Old CERT_FILE exists - overwrite [y/N]?" -n 1 -r
   echo
   if [[ "$REPLY" =~ ^[yY]$ ]]; then
     rm "zabbix/ssl/certs/${CERT_FILE}"
-    # Create Cert file
+    # Create Cert file and add Cert to enviromental variables
     echo "${TLS_Cert}" >"zabbix/ssl/certs/${CERT_FILE}"
+    opt_replace ZBX_TLSCERTFILE "${TLS_Cert}" env.list
   else
     echo "Using old CERT_FILE."
   fi
