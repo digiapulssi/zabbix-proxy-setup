@@ -28,6 +28,9 @@ START_CMD="docker-entrypoint.sh"
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
   echo "Container with name '${NAME}' already exists. Stop and remove old container before creating new one."
   exit 1
+elif [ "$(docker ps -aq -f name="zabbix-java-gateway")" ]; then
+  echo "Container with name 'zabbix-java-gateway' already exists. Stop and remove old container before creating new one."
+  exit 1
 fi
 
 echo "Creating container [${NAME}] using image [${CONTAINER_IMAGE}:${CONTAINER_VERSION}]."
@@ -48,6 +51,14 @@ COMMAND="${COMMAND}${START_CMD}"
 
 docker create \
   --restart=unless-stopped \
+  --name zabbix-java-gateway \
+  --cpu-quota=50000 \
+  -e 'ZBX_START_POLLERS=100' \
+  -e 'ZBX_TIMEOUT=30' \
+  -d digiapulssi/zabbix-java-gateway
+
+docker create \
+  --restart=unless-stopped \
   -v ${DIR}/zabbix/odbcinst.ini:/etc/odbcinst.ini \
   -v ${DIR}/zabbix/odbc.ini:/etc/odbc.ini \
   -v ${DIR}/zabbix/odbc:/var/lib/zabbix/odbc \
@@ -61,6 +72,7 @@ docker create \
   -v ${DIR}/zabbix/ssl/keys:/var/lib/zabbix/ssl/keys \
   -v ${DIR}/zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca \
   -p 10051:10051 \
+  --link zabbix-java-gateway:zabbix-java-gateway \
   --name ${NAME} \
   --env-file env.list \
   --entrypoint=/bin/bash \
