@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 # Usage: opt_replace <key> <value> <file>
 # Add or replace option in file. Key and value must not contain pipe character.
 function opt_replace {
