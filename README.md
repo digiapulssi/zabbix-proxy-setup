@@ -48,7 +48,7 @@ necessary environment variables to env.list used in container startup.
 
 ### TLS Cert Connection Setup
 The setup script for predefined certification files (Ca, Cert and Key).
-The script creates and deposites those files:
+The script creates and deposits those files:
 CA File -> zabbix/ssl/ssl_ca/
 Key File -> zabbix/ssl/keys/
 Cert File -> zabbix/ssl/certs/
