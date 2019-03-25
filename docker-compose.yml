@@ -1,4 +1,4 @@
-version: '3.5'
+version: '2'
 services:
   zabbix-agent:
     restart: unless-stopped
@@ -20,7 +20,7 @@ services:
      - ./zabbix/ssl/keys:/var/lib/zabbix/ssl/keys
      - ./zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca
     links:
-     - zabbix-java-gateway:zabbix-java-gateway
+     - zabbix-java-gateway:java-gateway
     env_file:
      - env.list
     entrypoint: /bin/bash
@@ -34,5 +34,3 @@ services:
      - "ZBX_START_POLLERS=100"
      - "ZBX_TIMEOUT=30"
     cpu_quota: 50000
-    env_file:
-     - .env_java

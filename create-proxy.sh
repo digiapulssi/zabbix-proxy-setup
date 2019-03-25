@@ -2,8 +2,8 @@
 
 set -e
 
-CONTAINER_VERSION=`cat zabbix/container.version`
-CONTAINER_IMAGE=`cat zabbix/container.image`
+export CONTAINER_VERSION=`cat zabbix/container.version`
+export CONTAINER_IMAGE=`cat zabbix/container.image`
 if [ -z "$CONTAINER_IMAGE" ]; then
   CONTAINER_IMAGE="zabbix/zabbix-proxy-sqlite3"
 fi
@@ -47,34 +47,6 @@ if [ -e "${CERT_FILE}" ]; then
   COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CERT_FILE}\"; chmod 600 \"/var/lib/${CERT_FILE}\"; "
 fi
 
-COMMAND="${COMMAND}${START_CMD}"
+export COMMAND="${COMMAND}${START_CMD}"
 
-docker create \
-  --restart=unless-stopped \
-  --name zabbix-java-gateway \
-  --cpu-quota=50000 \
-  -e 'ZBX_START_POLLERS=100' \
-  -e 'ZBX_TIMEOUT=30' \
-  -d digiapulssi/zabbix-java-gateway
-
-docker create \
-  --restart=unless-stopped \
-  -v ${DIR}/zabbix/odbcinst.ini:/etc/odbcinst.ini \
-  -v ${DIR}/zabbix/odbc.ini:/etc/odbc.ini \
-  -v ${DIR}/zabbix/odbc:/var/lib/zabbix/odbc \
-  -v ${DIR}/zabbix/enc:/var/lib/zabbix/enc \
-  -v ${DIR}/zabbix/externalscripts:/usr/lib/zabbix/externalscripts \
-  -v ${DIR}/zabbix/mibs:/var/lib/zabbix/mibs \
-  -v ${DIR}/zabbix/modules:/var/lib/zabbix/modules \
-  -v ${DIR}/zabbix/snmptraps:/var/lib/zabbix/snmptraps \
-  -v ${DIR}/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys \
-  -v ${DIR}/zabbix/ssl/certs:/var/lib/zabbix/ssl/certs \
-  -v ${DIR}/zabbix/ssl/keys:/var/lib/zabbix/ssl/keys \
-  -v ${DIR}/zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca \
-  -p 10051:10051 \
-  --link zabbix-java-gateway:zabbix-java-gateway \
-  --name ${NAME} \
-  --env-file env.list \
-  --entrypoint=/bin/bash \
-  ${CONTAINER_IMAGE}:${CONTAINER_VERSION} \
-  -c "${COMMAND}"
+run docker-compose.yml
