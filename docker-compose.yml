@@ -1,0 +1,38 @@
+version: '3.5'
+services:
+  zabbix-agent:
+    restart: unless-stopped
+    image: ${CONTAINER_IMAGE}:${CONTAINER_VERSION}
+    container_name: zabbix-agent
+    ports:
+     - "10051:10051"
+    volumes:
+     - ./zabbix/odbcinst.ini:/etc/odbcinst.ini
+     - ./zabbix/odbc.ini:/etc/odbc.ini
+     - ./zabbix/odbc:/var/lib/zabbix/odbc
+     - ./zabbix/enc:/var/lib/zabbix/enc
+     - ./zabbix/externalscripts:/usr/lib/zabbix/externalscripts
+     - ./zabbix/mibs:/var/lib/zabbix/mibs
+     - ./zabbix/modules:/var/lib/zabbix/modules
+     - ./zabbix/snmptraps:/var/lib/zabbix/snmptraps
+     - ./zabbix/ssh_keys:/var/lib/zabbix/ssh_keys
+     - ./zabbix/ssl/certs:/var/lib/zabbix/ssl/certs
+     - ./zabbix/ssl/keys:/var/lib/zabbix/ssl/keys
+     - ./zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca
+    links:
+     - zabbix-java-gateway:zabbix-java-gateway
+    env_file:
+     - env.list
+    entrypoint: /bin/bash
+    command: "${COMMAND}"
+
+  zabbix-java-gateway:
+    restart: unless-stopped
+    image: digiapulssi/zabbix-java-gateway:latest
+    container_name: zabbix-java-gateway
+    enviroment:
+     - "ZBX_START_POLLERS=100"
+     - "ZBX_TIMEOUT=30"
+    cpu_quota: 50000
+    env_file:
+     - .env_java
