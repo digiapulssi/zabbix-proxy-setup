@@ -46,6 +46,17 @@ necessary environment variables to env.list used in container startup.
 1. Run `sudo ./setup-psk.sh` to setup PSK key and identity for proxy
 2. Configure the same PSK key and identity on Zabbix server
 
+### TLS Cert Connection Setup
+The setup script for predefined certification files (Ca, Cert and Key).
+The script creates and deposits those files:
+CA File -> zabbix/ssl/ssl_ca/
+Key File -> zabbix/ssl/keys/
+Cert File -> zabbix/ssl/certs/
+
+The script also creates and initializes necessary environment variables.
+
+1. Run `sudo ./setup-tls-certificates.sh` to setup certification files
+
 ### Zabbix PROXY SQlite Database ODBC Data Source Setup
 
 The setup script configures ODBC data source to use for accessing Zabbix Proxy SQLite database
@@ -130,4 +141,3 @@ SQL> quit
 
 The isql command reports descriptive error if there are connection configuration
 issues or connecting to database fails.
-

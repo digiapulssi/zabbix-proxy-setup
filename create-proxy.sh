@@ -20,6 +20,9 @@ DIR=`realpath $(dirname $0)`
 NAME=${1:-zabbix-proxy}
 CONTAINER_VERSION=${2:-${CONTAINER_VERSION}}
 PSK_FILE=zabbix/enc/zabbix_proxy.psk
+CA_FILE=zabbix/ssl/ssl_ca/zabbix_proxy.ca
+KEY_FILE=zabbix/ssl/keys/zabbix_proxy.pem
+CERT_FILE=zabbix/ssl/certs/zabbix_proxy.pem
 START_CMD="docker-entrypoint.sh"
 
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
@@ -29,11 +32,19 @@ fi
 
 echo "Creating container [${NAME}] using image [${CONTAINER_IMAGE}:${CONTAINER_VERSION}]."
 
+COMMAND=""
+
 if [ -e "${PSK_FILE}" ]; then
-  COMMAND="chown zabbix:zabbix \"/var/lib/${PSK_FILE}\"; chmod 600 \"/var/lib/${PSK_FILE}\"; ${START_CMD}"
-else
-  COMMAND="${START_CMD}"
+  COMMAND="chown zabbix:zabbix \"/var/lib/${PSK_FILE}\"; chmod 600 \"/var/lib/${PSK_FILE}\"; "
+if [ -e "${CA_FILE}" ]; then
+  COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CA_FILE}\"; chmod 600 \"/var/lib/${CA_FILE}\"; "
+if [ -e "${KEY_FILE}" ]; then
+  COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${KEY_FILE}\"; chmod 600 \"/var/lib/${KEY_FILE}\"; "
+if [ -e "${CERT_FILE}" ]; then
+  COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CERT_FILE}\"; chmod 600 \"/var/lib/${CERT_FILE}\"; "
 fi
+
+COMMAND="${COMMAND}${START_CMD}"
 
 docker create \
   --restart=unless-stopped \
