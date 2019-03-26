@@ -2,8 +2,8 @@
 
 set -e
 
-CONTAINER_VERSION=`cat zabbix/container.version`
-CONTAINER_IMAGE=`cat zabbix/container.image`
+export CONTAINER_VERSION=`cat zabbix/container.version`
+export CONTAINER_IMAGE=`cat zabbix/container.image`
 if [ -z "$CONTAINER_IMAGE" ]; then
   CONTAINER_IMAGE="zabbix/zabbix-proxy-sqlite3"
 fi
@@ -28,6 +28,9 @@ START_CMD="docker-entrypoint.sh"
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
   echo "Container with name '${NAME}' already exists. Stop and remove old container before creating new one."
   exit 1
+elif [ "$(docker ps -aq -f name="zabbix-java-gateway")" ]; then
+  echo "Container with name 'zabbix-java-gateway' already exists. Stop and remove old container before creating new one."
+  exit 1
 fi
 
 echo "Creating container [${NAME}] using image [${CONTAINER_IMAGE}:${CONTAINER_VERSION}]."
@@ -36,33 +39,17 @@ COMMAND=""
 
 if [ -e "${PSK_FILE}" ]; then
   COMMAND="chown zabbix:zabbix \"/var/lib/${PSK_FILE}\"; chmod 600 \"/var/lib/${PSK_FILE}\"; "
+fi
 if [ -e "${CA_FILE}" ]; then
   COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CA_FILE}\"; chmod 600 \"/var/lib/${CA_FILE}\"; "
+fi
 if [ -e "${KEY_FILE}" ]; then
   COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${KEY_FILE}\"; chmod 600 \"/var/lib/${KEY_FILE}\"; "
+fi
 if [ -e "${CERT_FILE}" ]; then
   COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CERT_FILE}\"; chmod 600 \"/var/lib/${CERT_FILE}\"; "
 fi
 
-COMMAND="${COMMAND}${START_CMD}"
+export COMMAND="${COMMAND}${START_CMD}"
 
-docker create \
-  --restart=unless-stopped \
-  -v ${DIR}/zabbix/odbcinst.ini:/etc/odbcinst.ini \
-  -v ${DIR}/zabbix/odbc.ini:/etc/odbc.ini \
-  -v ${DIR}/zabbix/odbc:/var/lib/zabbix/odbc \
-  -v ${DIR}/zabbix/enc:/var/lib/zabbix/enc \
-  -v ${DIR}/zabbix/externalscripts:/usr/lib/zabbix/externalscripts \
-  -v ${DIR}/zabbix/mibs:/var/lib/zabbix/mibs \
-  -v ${DIR}/zabbix/modules:/var/lib/zabbix/modules \
-  -v ${DIR}/zabbix/snmptraps:/var/lib/zabbix/snmptraps \
-  -v ${DIR}/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys \
-  -v ${DIR}/zabbix/ssl/certs:/var/lib/zabbix/ssl/certs \
-  -v ${DIR}/zabbix/ssl/keys:/var/lib/zabbix/ssl/keys \
-  -v ${DIR}/zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca \
-  -p 10051:10051 \
-  --name ${NAME} \
-  --env-file env.list \
-  --entrypoint=/bin/bash \
-  ${CONTAINER_IMAGE}:${CONTAINER_VERSION} \
-  -c "${COMMAND}"
+docker-compose up --no-start
