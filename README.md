@@ -19,16 +19,13 @@ To setup Zabbix proxy:
 
 1. Initialize proxy configuration structure: `./init-config.sh`.
 2. Setup proxy configuration by running necessary setup scripts or manually setting up files
-3. Create proxy docker container: `./create-proxy.sh`
-4. Start proxy docker container: `docker start zabbix-proxy`
-5. Start java gateway container: `docker start zabbix-java-gateway`
+3. Start proxy docker container: `./create-proxy.sh`
 
 To modify proxy configuration:
 
 1. Stop and destroy container: `./remove-proxy.sh`
 2. Update proxy configuration by running necessary setup scripts or manually setting up files
-3. Create and run new proxy docker container: `./create-proxy.sh` and `docker start zabbix-proxy` 
-   & `docker start zabbix-java-gateway`
+3. Create and run new proxy docker container: `./create-proxy.sh`
 
 The docker container created is named zabbix-proxy by default. Java Gateway container is
 named zabbix-java-gateway.

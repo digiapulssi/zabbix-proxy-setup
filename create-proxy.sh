@@ -39,14 +39,17 @@ COMMAND=""
 
 if [ -e "${PSK_FILE}" ]; then
   COMMAND="chown zabbix:zabbix \"/var/lib/${PSK_FILE}\"; chmod 600 \"/var/lib/${PSK_FILE}\"; "
+fi
 if [ -e "${CA_FILE}" ]; then
   COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CA_FILE}\"; chmod 600 \"/var/lib/${CA_FILE}\"; "
+fi
 if [ -e "${KEY_FILE}" ]; then
   COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${KEY_FILE}\"; chmod 600 \"/var/lib/${KEY_FILE}\"; "
+fi
 if [ -e "${CERT_FILE}" ]; then
   COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CERT_FILE}\"; chmod 600 \"/var/lib/${CERT_FILE}\"; "
 fi
 
 export COMMAND="${COMMAND}${START_CMD}"
 
-run docker-compose.yml
+docker-compose up -d
