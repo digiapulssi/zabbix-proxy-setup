@@ -52,4 +52,4 @@ fi
 
 export COMMAND="${COMMAND}${START_CMD}"
 
-docker-compose up -d
+docker-compose up --no-start
