@@ -11,13 +11,16 @@ KEY_FILE=zabbix_proxy.pem
 CA_FILE=zabbix_proxy.ca
 
 # Obtain TLSCert
-read -p "Enter TLSCert: " TLS_Cert
+echo "Enter TLSCert: " 
+TLS_Cert=$(</dev/stdin)
 
 # Obtain TLSKey
-read -p "Enter TLSKey: " TLS_Key
+echo "Enter TLSKey: " 
+TLS_Key=$(</dev/stdin)
 
 # Obtain TLSCA
-read -p "Enter TLSCA: " TLS_CA
+echo "Enter TLSCA: " 
+TLS_CA=$(</dev/stdin)
 
 # Check for existing files and replacing with new one if chosen so
 # Check CA_FILE and replace with new one if chosen
