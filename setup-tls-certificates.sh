@@ -10,71 +10,80 @@ CERT_FILE=zabbix_proxy.pem
 KEY_FILE=zabbix_proxy.pem
 CA_FILE=zabbix_proxy.ca
 
-# Obtain TLSCert
-read -p "Enter TLSCert: " TLS_Cert
-
-# Obtain TLSKey
-read -p "Enter TLSKey: " TLS_Key
-
-# Obtain TLSCA
-read -p "Enter TLSCA: " TLS_CA
-
-# Check for existing files and replacing with new one if chosen so
-# Check CA_FILE and replace with new one if chosen
-if [ -e "zabbix/ssl/ssl_ca/${CA_FILE}" ]; then
-  read -p "Old CA_FILE exists - overwrite [y/N]?" -n 1 -r
+# Check CERT_FILE and replace with new one if chosen
+if [ -e "zabbix/ssl/certs/${CERT_FILE}" ]; then
+  read -p "Old client certificate exists - overwrite [y/N]?" -n 1 -r
   echo
   if [[ "$REPLY" =~ ^[yY]$ ]]; then
-    rm "zabbix/ssl/ssl_ca/${CA_FILE}"
-    # Create CA file and add CA to enviromental variables
-    echo "${TLS_CA}" >"zabbix/ssl/ssl_ca/${CA_FILE}"
-    opt_replace ZBX_TLSCAFILE "${TLS_CA}" env.list
+    rm "zabbix/ssl/certs/${CERT_FILE}"
+    # Obtain client certificate
+    echo "Enter client certificate (Ctrl+D to end input): "
+    TLS_Cert=$(</dev/stdin)
+    # Create Cert file and add Cert to enviromental variables
+    echo "${TLS_Cert}" >"zabbix/ssl/certs/${CERT_FILE}"
+    opt_replace ZBX_TLSCERTFILE "/var/lib/zabbix/ssl/certs/${CERT_FILE}" env.list
   else
-    echo "Using old CA_FILE."
+    echo "Using old client certificate."
   fi
 else
-  # Create CA file
-  echo "${TLS_CA}" >"zabbix/ssl/ssl_ca/${CA_FILE}"
-  # Setup environment options
-  opt_replace ZBX_TLSCAFILE "${TLS_CA}" env.list
+  # Obtain client certificate
+  echo "Enter client certificate (Ctrl+D to end input): "
+  TLS_Cert=$(</dev/stdin)
+  # Create Cert file
+  echo "${TLS_Cert}" >"zabbix/ssl/certs/${CERT_FILE}"
+  # Setup environment option
+  opt_replace ZBX_TLSCERTFILE "/var/lib/zabbix/ssl/certs/${CERT_FILE}" env.list
 fi
 
 # Check KEY_FILE and replace with new one if chosen
 if [ -e "zabbix/ssl/keys/${KEY_FILE}" ]; then
-  read -p "Old KEY_FILE exists - overwrite [y/N]?" -n 1 -r
+  read -p "Old client private key exists - overwrite [y/N]?" -n 1 -r
   echo
   if [[ "$REPLY" =~ ^[yY]$ ]]; then
     rm "zabbix/ssl/keys/${KEY_FILE}"
+    # Obtain client private key
+    echo "Enter client private key (Ctrl+D to end input): "
+    TLS_Key=$(</dev/stdin)
     # Create Key file and add Key to enviromental variables
     echo "${TLS_Key}" >"zabbix/ssl/keys/${KEY_FILE}"
-    opt_replace ZBX_TLSKEYFILE "${TLS_Key}" env.list
+    opt_replace ZBX_TLSKEYFILE "/var/lib/zabbix/ssl/keys/${KEY_FILE}" env.list
   else
-    echo "Using old KEY_FILE."
+    echo "Using old client private key."
   fi
 else
+  # Obtain client private key
+  echo "Enter client private key (Ctrl+D to end input): "
+  TLS_Key=$(</dev/stdin)
   # Create Key file
   echo "${TLS_Key}" >"zabbix/ssl/keys/${KEY_FILE}"
   # Setup environment options
-  opt_replace ZBX_TLSKEYFILE "${TLS_Key}" env.list
+  opt_replace ZBX_TLSKEYFILE "/var/lib/zabbix/ssl/keys/${KEY_FILE}" env.list
 fi
 
-# Check CERT_FILE and replace with new one if chosen
-if [ -e "zabbix/ssl/certs/${CERT_FILE}" ]; then
-  read -p "Old CERT_FILE exists - overwrite [y/N]?" -n 1 -r
+# Check for existing files and replacing with new one if chosen so
+# Check CA_FILE and replace with new one if chosen
+if [ -e "zabbix/ssl/ssl_ca/${CA_FILE}" ]; then
+  read -p "Old server CA certificate exists - overwrite [y/N]?" -n 1 -r
   echo
   if [[ "$REPLY" =~ ^[yY]$ ]]; then
-    rm "zabbix/ssl/certs/${CERT_FILE}"
-    # Create Cert file and add Cert to enviromental variables
-    echo "${TLS_Cert}" >"zabbix/ssl/certs/${CERT_FILE}"
-    opt_replace ZBX_TLSCERTFILE "${TLS_Cert}" env.list
+    rm "zabbix/ssl/ssl_ca/${CA_FILE}"
+    # Obtain server CA certificate
+    echo "Enter server CA certificate (Ctrl+D to end input): "
+    TLS_CA=$(</dev/stdin)
+    # Create CA file and add CA to enviromental variables
+    echo "${TLS_CA}" >"zabbix/ssl/ssl_ca/${CA_FILE}"
+    opt_replace ZBX_TLSCAFILE "/var/lib/zabbix/ssl/ssl_ca/${CA_FILE}" env.list
   else
-    echo "Using old CERT_FILE."
+    echo "Using old server CA certificate."
   fi
 else
-  # Create Cert file
-  echo "${TLS_Cert}" >"zabbix/ssl/certs/${CERT_FILE}"
-  # Setup environment option
-  opt_replace ZBX_TLSCERTFILE "${TLS_Cert}" env.list
+  # Obtain server CA certificate
+  echo "Enter server CA certificate (Ctrl+D to end input): "
+  TLS_CA=$(</dev/stdin)
+  # Create CA file
+  echo "${TLS_CA}" >"zabbix/ssl/ssl_ca/${CA_FILE}"
+  # Setup environment options
+  opt_replace ZBX_TLSCAFILE "/var/lib/zabbix/ssl/ssl_ca/${CA_FILE}" env.list
 fi
 
 
