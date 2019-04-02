@@ -20,7 +20,7 @@ To setup Zabbix proxy:
 1. Initialize proxy configuration structure: `./init-config.sh`.
 2. Setup proxy configuration by running necessary setup scripts or manually setting up files
 3. Create proxy docker container: `./create-proxy.sh`
-4. Start proxy docker container: `docker-compose start`
+4. Start proxy docker container: `docker start <container name>`
 
 To modify proxy configuration:
 
