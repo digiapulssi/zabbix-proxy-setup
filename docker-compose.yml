@@ -1,9 +1,9 @@
 version: '2'
 services:
-  zabbix-agent:
+  zabbix-proxy:
     restart: unless-stopped
     image: ${CONTAINER_IMAGE}:${CONTAINER_VERSION}
-    container_name: zabbix-agent
+    container_name: zabbix-proxy
     ports:
      - "10051:10051"
     volumes:
@@ -23,8 +23,7 @@ services:
      - zabbix-java-gateway
     env_file:
      - env.list
-    entrypoint: /bin/bash
-    command: "${COMMAND}"
+    command: /bin/bash -c "${COMMAND}"
 
   zabbix-java-gateway:
     restart: unless-stopped
