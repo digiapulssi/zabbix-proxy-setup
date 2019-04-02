@@ -20,9 +20,9 @@ DIR=`realpath $(dirname $0)`
 NAME=${1:-zabbix-proxy}
 CONTAINER_VERSION=${2:-${CONTAINER_VERSION}}
 PSK_FILE=zabbix/enc/zabbix_proxy.psk
-CA_FILE=zabbix/ssl/ssl_ca/zabbix_proxy.ca
-KEY_FILE=zabbix/ssl/keys/zabbix_proxy.pem
-CERT_FILE=zabbix/ssl/certs/zabbix_proxy.pem
+CERT_FILE=zabbix/enc/zabbix_proxy_cert.pem
+KEY_FILE=zabbix/enc/zabbix_proxy_key.pem
+CA_FILE=zabbix/enc/zabbix_proxy.ca
 START_CMD="docker-entrypoint.sh"
 
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
