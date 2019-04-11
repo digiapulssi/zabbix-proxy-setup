@@ -23,7 +23,14 @@ PSK_FILE=zabbix/enc/zabbix_proxy.psk
 CERT_FILE=zabbix/enc/zabbix_proxy_cert.pem
 KEY_FILE=zabbix/enc/zabbix_proxy_key.pem
 CA_FILE=zabbix/enc/zabbix_proxy.ca
-START_CMD="docker-entrypoint.sh"
+
+read -p "Use default user 1000 for UID (Y/n)?" -n 1 -r
+echo
+if [[ ${REPLY} =~ ^[nN]$ ]]; then
+  read -p 'Enter UID: ' user
+else
+  user=1000
+fi
 
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
   echo "Container with name '${NAME}' already exists. Stop and remove old container before creating new one."
@@ -35,21 +42,5 @@ fi
 
 echo "Creating container [${NAME}] using image [${CONTAINER_IMAGE}:${CONTAINER_VERSION}]."
 
-COMMAND=""
-
-if [ -e "${PSK_FILE}" ]; then
-  COMMAND="chown zabbix:zabbix \"/var/lib/${PSK_FILE}\" ; chmod 600 \"/var/lib/${PSK_FILE}\" ; "
-fi
-if [ -e "${CA_FILE}" ]; then
-  COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CA_FILE}\" ; chmod 600 \"/var/lib/${CA_FILE}\" ; "
-fi
-if [ -e "${KEY_FILE}" ]; then
-  COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${KEY_FILE}\" ; chmod 600 \"/var/lib/${KEY_FILE}\" ; "
-fi
-if [ -e "${CERT_FILE}" ]; then
-  COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CERT_FILE}\" ; chmod 600 \"/var/lib/${CERT_FILE}\" ; "
-fi
-
-export COMMAND="${COMMAND}${START_CMD}"
-
+export uid="${user}"
 docker-compose up --no-start

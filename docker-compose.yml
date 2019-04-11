@@ -3,7 +3,7 @@ services:
   zabbix-proxy:
     restart: unless-stopped
     image: ${CONTAINER_IMAGE}:${CONTAINER_VERSION}
-    user: 1343
+    user: ${uid}
     container_name: zabbix-proxy
     ports:
      - "10051:10051"
