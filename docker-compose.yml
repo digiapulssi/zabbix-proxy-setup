@@ -3,7 +3,6 @@ services:
   zabbix-proxy:
     restart: unless-stopped
     image: ${CONTAINER_IMAGE}:${CONTAINER_VERSION}
-    user: ${uid}
     container_name: zabbix-proxy
     ports:
      - "10051:10051"
@@ -24,6 +23,7 @@ services:
      - zabbix-java-gateway
     env_file:
      - env.list
+     command: bash -c "${COMMAND}"
 
   zabbix-java-gateway:
     restart: unless-stopped
