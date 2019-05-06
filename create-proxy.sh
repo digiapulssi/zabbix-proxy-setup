@@ -41,14 +41,6 @@ else
   group=1000
 fi
 
-read -p "Use default user 1000 for UID (Y/n)?" -n 1 -r
-echo
-if [[ ${REPLY} =~ ^[nN]$ ]]; then
-  read -p 'Enter UID: ' user
-else
-  user=1000
-fi
-
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
   echo "Container with name '${NAME}' already exists. Stop and remove old container before creating new one."
   exit 1
