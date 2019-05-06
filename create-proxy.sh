@@ -25,6 +25,22 @@ KEY_FILE=zabbix/enc/zabbix_proxy_key.pem
 CA_FILE=zabbix/enc/zabbix_proxy.ca
 START_CMD="docker-entrypoint.sh"
 
+read -p "Use default user 100 for UID (Y/n)?" -n 1 -r
+echo
+if [[ ${REPLY} =~ ^[nN]$ ]]; then
+  read -p 'Enter UID: ' user
+else
+  user=100
+fi
+
+read -p "Use default group 1000 for GID (Y/n)?" -n 1 -r
+echo
+if [[ ${REPLY} =~ ^[nN]$ ]]; then
+  read -p 'Enter GID: ' group
+else
+  group=1000
+fi
+
 if [ "$(docker ps -aq -f name=${NAME})" ]; then
   echo "Container with name '${NAME}' already exists. Stop and remove old container before creating new one."
   exit 1
@@ -37,18 +53,7 @@ echo "Creating container [${NAME}] using image [${CONTAINER_IMAGE}:${CONTAINER_V
 
 COMMAND=""
 
-if [ -e "${PSK_FILE}" ]; then
-  COMMAND="chown zabbix:zabbix \"/var/lib/${PSK_FILE}\"; chmod 600 \"/var/lib/${PSK_FILE}\"; "
-fi
-if [ -e "${CA_FILE}" ]; then
-  COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CA_FILE}\"; chmod 600 \"/var/lib/${CA_FILE}\"; "
-fi
-if [ -e "${KEY_FILE}" ]; then
-  COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${KEY_FILE}\"; chmod 600 \"/var/lib/${KEY_FILE}\"; "
-fi
-if [ -e "${CERT_FILE}" ]; then
-  COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${CERT_FILE}\"; chmod 600 \"/var/lib/${CERT_FILE}\"; "
-fi
+COMMAND="deluser zabbix; addgroup -g ${group} zabbix; adduser -u ${user} -G zabbix -g 'zabbix user' -s /sbin/nologin -D zabbix; find / -user 100 -exec chown zabbix {} \; ; find / -group 1000 -exec chgrp zabbix {} \; ; "
 
 export COMMAND="${COMMAND}${START_CMD}"
 

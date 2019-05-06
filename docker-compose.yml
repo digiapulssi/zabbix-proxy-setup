@@ -23,7 +23,7 @@ services:
      - zabbix-java-gateway
     env_file:
      - env.list
-    command: /bin/bash -c "${COMMAND}"
+     command: bash -c "${COMMAND}"
 
   zabbix-java-gateway:
     restart: unless-stopped
