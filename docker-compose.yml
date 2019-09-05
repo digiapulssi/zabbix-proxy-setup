@@ -32,4 +32,5 @@ services:
     environment:
      - "ZBX_START_POLLERS=100"
      - "ZBX_TIMEOUT=30"
+     - "ZBX_SERVER_HOST=0.0.0.0/0"
     cpu_quota: 50000
