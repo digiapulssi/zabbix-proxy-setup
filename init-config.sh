@@ -49,6 +49,7 @@ if [ -z "$PASSIVE_PROXY" ]; then
   echo "ZBX_SERVER_PORT=${SERVER_PORT}" >>env.list
 else
   echo "ZBX_PROXYMODE=1" >>env.list
+  echo "ZBX_SERVER_HOST=0.0.0.0/0" >>env.list
 fi
 echo "ZBX_CONFIGFREQUENCY=300" >>env.list
 echo "ZBX_CACHESIZE=120M" >>env.list
