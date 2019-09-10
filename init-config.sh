@@ -25,6 +25,12 @@ else
   read -p "Enter Zabbix server port: " SERVER_PORT
 fi
 
+read -p "Enable SNMP traps (Y/n)?" -n 1 -r
+echo
+if [[ ${REPLY} =~ ^[yY]$ ]]; then
+  echo "ZBX_ENABLE_SNMP_TRAPS=true" >>env.list
+fi
+
 safe_mkdir zabbix
 safe_mkdir zabbix/enc
 safe_mkdir zabbix/externalscripts
