@@ -27,7 +27,9 @@ fi
 
 read -p "Enable SNMP traps (Y/n)?" -n 1 -r
 echo
-if [[ ${REPLY} =~ ^[yY]$ ]]; then
+if [[ ${REPLY} =~ ^[nN]$ ]]; then
+  echo "ZBX_ENABLE_SNMP_TRAPS=false" >>env.list
+else
   echo "ZBX_ENABLE_SNMP_TRAPS=true" >>env.list
 fi
 
