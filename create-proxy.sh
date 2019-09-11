@@ -47,6 +47,9 @@ if [ "$(docker ps -aq -f name=${NAME})" ]; then
 elif [ "$(docker ps -aq -f name="zabbix-java-gateway")" ]; then
   echo "Container with name 'zabbix-java-gateway' already exists. Stop and remove old container before creating new one."
   exit 1
+elif [ "$(docker ps -aq -f name="zabbix-snmptraps")" ]; then
+  echo "Container with name 'zabbix-snmptraps' already exists. Stop and remove old container before creating new one."
+  exit 1
 fi
 
 echo "Creating container [${NAME}] using image [${CONTAINER_IMAGE}:${CONTAINER_VERSION}]."

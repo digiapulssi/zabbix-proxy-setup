@@ -21,6 +21,7 @@ services:
      - ./zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca
     links:
      - zabbix-java-gateway
+     - zabbix-snmptraps
     env_file:
      - env.list
      command: bash -c "${COMMAND}"
@@ -33,3 +34,13 @@ services:
      - "ZBX_START_POLLERS=100"
      - "ZBX_TIMEOUT=30"
     cpu_quota: 50000
+  
+  zabbix-snmptraps:
+    restart: unless-stopped
+    image: zabbix/zabbix-snmptraps:alpine-4.0-latest
+    container_name: zabbix-snmptraps
+    ports:
+     - "162:162/udp"
+    volumes:
+     - ./zabbix/snmptraps:/var/lib/zabbix/snmptraps:z
+     - ./zabbix/mibs:/var/lib/zabbix/mibs:z
