@@ -7,18 +7,18 @@ services:
     ports:
      - "10051:10051"
     volumes:
-     - ./zabbix/odbcinst.ini:/etc/odbcinst.ini
-     - ./zabbix/odbc.ini:/etc/odbc.ini
-     - ./zabbix/odbc:/var/lib/zabbix/odbc
-     - ./zabbix/enc:/var/lib/zabbix/enc
-     - ./zabbix/externalscripts:/usr/lib/zabbix/externalscripts
-     - ./zabbix/mibs:/var/lib/zabbix/mibs
-     - ./zabbix/modules:/var/lib/zabbix/modules
-     - ./zabbix/snmptraps:/var/lib/zabbix/snmptraps
-     - ./zabbix/ssh_keys:/var/lib/zabbix/ssh_keys
-     - ./zabbix/ssl/certs:/var/lib/zabbix/ssl/certs
-     - ./zabbix/ssl/keys:/var/lib/zabbix/ssl/keys
-     - ./zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca
+     - ./zabbix/odbcinst.ini:/etc/odbcinst.ini:z
+     - ./zabbix/odbc.ini:/etc/odbc.ini:z
+     - ./zabbix/odbc:/var/lib/zabbix/odbc:z
+     - ./zabbix/enc:/var/lib/zabbix/enc:z
+     - ./zabbix/externalscripts:/usr/lib/zabbix/externalscripts:z
+     - ./zabbix/mibs:/var/lib/zabbix/mibs:z
+     - ./zabbix/modules:/var/lib/zabbix/modules:z
+     - ./zabbix/snmptraps:/var/lib/zabbix/snmptraps:z
+     - ./zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:z
+     - ./zabbix/ssl/certs:/var/lib/zabbix/ssl/certs:z
+     - ./zabbix/ssl/keys:/var/lib/zabbix/ssl/keys:z
+     - ./zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca:z
     links:
      - zabbix-java-gateway
      - zabbix-snmptraps
