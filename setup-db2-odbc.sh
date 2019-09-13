@@ -52,7 +52,7 @@ echo >>${ODBCINST_INI}
 touch ${ODBC_INI}
 
 # Driver will not run on alpine based image because it has dependencies to gcc
-echo "ubuntu-latest" >zabbix/container.version
+echo "ubuntu-4.0-latest" >zabbix/container.version
 
 echo
 echo "Driver install complete. Driver name for odbc.ini is 'db2_${VERSION//.}'."
