@@ -56,7 +56,11 @@ echo "Creating container [${NAME}] using image [${CONTAINER_IMAGE}:${CONTAINER_V
 
 COMMAND=""
 
-COMMAND="deluser zabbix; addgroup -g ${group} zabbix; adduser -u ${user} -G zabbix -g 'zabbix user' -s /sbin/nologin -D zabbix; find / -user 100 -exec chown zabbix {} \; ; find / -group 1000 -exec chgrp zabbix {} \; ; "
+if ["${CONTAINER_VERSION}" == "ubuntu-4.0-latest"]; then
+  COMMAND="deluser zabbix; addgroup --gid ${group} zabbix; adduser --uid ${user} --gid 1343 --system zabbix; find / -user 101 -exec chown zabbix {} \; ; find / -group 101 -exec chgrp zabbix {} \; ; "
+else
+  COMMAND="deluser zabbix; addgroup -g ${group} zabbix; adduser -u ${user} -G zabbix -g 'zabbix user' -s /sbin/nologin -D zabbix; find / -user 100 -exec chown zabbix {} \; ; find / -group 1000 -exec chgrp zabbix {} \; ; "
+fi
 
 export COMMAND="${COMMAND}${START_CMD}"
 
