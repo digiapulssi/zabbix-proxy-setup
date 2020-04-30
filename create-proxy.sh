@@ -25,12 +25,12 @@ KEY_FILE=zabbix/enc/zabbix_proxy_key.pem
 CA_FILE=zabbix/enc/zabbix_proxy.ca
 START_CMD="docker-entrypoint.sh"
 
-read -p "Use default user 100 for UID (Y/n)?" -n 1 -r
+read -p "Use default user 101 for UID (Y/n)?" -n 1 -r
 echo
 if [[ ${REPLY} =~ ^[nN]$ ]]; then
   read -p 'Enter UID: ' user
 else
-  user=100
+  user=101
 fi
 
 read -p "Use default group 1000 for GID (Y/n)?" -n 1 -r
@@ -57,9 +57,13 @@ echo "Creating container [${NAME}] using image [${CONTAINER_IMAGE}:${CONTAINER_V
 COMMAND=""
 
 if [[ "${CONTAINER_VERSION}" =~ ^ubuntu ]]; then
-  COMMAND="deluser zabbix; addgroup --gid ${group} zabbix; adduser --uid ${user} --gid 1343 --system zabbix; find / -user 101 -exec chown zabbix {} \; ; find / -group 101 -exec chgrp zabbix {} \; ; "
+  COMMAND="deluser zabbix; addgroup --gid ${group} zabbix; adduser --uid ${user} --gid ${group} --system zabbix; find / -user 101 -exec chown zabbix {} \; ; find / -group 101 -exec chgrp zabbix {} \; ; "
 else
   COMMAND="deluser zabbix; addgroup -g ${group} zabbix; adduser -u ${user} -G zabbix -g 'zabbix user' -s /sbin/nologin -D zabbix; find / -user 100 -exec chown zabbix {} \; ; find / -group 1000 -exec chgrp zabbix {} \; ; "
+fi
+
+if [ -e "${PSK_FILE}" ]; then
+  COMMAND="${COMMAND}chown zabbix:zabbix \"/var/lib/${PSK_FILE}\"; chmod 600 \"/var/lib/${PSK_FILE}\";"
 fi
 
 export COMMAND="${COMMAND}${START_CMD}"

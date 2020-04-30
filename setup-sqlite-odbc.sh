@@ -14,4 +14,3 @@ Database=/var/lib/zabbix/zabbix_proxy_db' >> zabbix/odbc.ini
 
 # Usage digiapulssi version of the image because it contains pre-built SQLite driver
 echo 'digiapulssi/zabbix-proxy-sqlite3' > zabbix/container.image
-echo "alpine-3.4-latest" > zabbix/container.version
