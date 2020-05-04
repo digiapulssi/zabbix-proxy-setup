@@ -5,42 +5,42 @@ services:
     image: ${CONTAINER_IMAGE}:${CONTAINER_VERSION}
     container_name: zabbix-proxy
     ports:
-     - "10051:10051"
+      - "10051:10051"
     volumes:
-     - ./zabbix/odbcinst.ini:/etc/odbcinst.ini:z
-     - ./zabbix/odbc.ini:/etc/odbc.ini:z
-     - ./zabbix/odbc:/var/lib/zabbix/odbc:z
-     - ./zabbix/enc:/var/lib/zabbix/enc:z
-     - ./zabbix/externalscripts:/usr/lib/zabbix/externalscripts:z
-     - ./zabbix/mibs:/var/lib/zabbix/mibs:z
-     - ./zabbix/modules:/var/lib/zabbix/modules:z
-     - ./zabbix/snmptraps:/var/lib/zabbix/snmptraps:z
-     - ./zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:z
-     - ./zabbix/ssl/certs:/var/lib/zabbix/ssl/certs:z
-     - ./zabbix/ssl/keys:/var/lib/zabbix/ssl/keys:z
-     - ./zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca:z
+      - ./zabbix/odbcinst.ini:/etc/odbcinst.ini:z
+      - ./zabbix/odbc.ini:/etc/odbc.ini:z
+      - ./zabbix/odbc:/var/lib/zabbix/odbc:z
+      - ./zabbix/enc:/var/lib/zabbix/enc:z
+      - ./zabbix/externalscripts:/usr/lib/zabbix/externalscripts:z
+      - ./zabbix/mibs:/var/lib/zabbix/mibs:z
+      - ./zabbix/modules:/var/lib/zabbix/modules:z
+      - ./zabbix/snmptraps:/var/lib/zabbix/snmptraps:z
+      - ./zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:z
+      - ./zabbix/ssl/certs:/var/lib/zabbix/ssl/certs:z
+      - ./zabbix/ssl/keys:/var/lib/zabbix/ssl/keys:z
+      - ./zabbix/ssl/ssl_ca:/var/lib/zabbix/ssl/ssl_ca:z
     links:
-     - zabbix-java-gateway
-     - zabbix-snmptraps
+      - zabbix-java-gateway
+      - zabbix-snmptraps
     env_file:
-     - env.list
-     command: bash -c "${COMMAND}"
+      - env.list
+    command: bash -c "${COMMAND}"
 
   zabbix-java-gateway:
     restart: unless-stopped
     image: digiapulssi/zabbix-java-gateway:latest
     container_name: zabbix-java-gateway
     environment:
-     - "ZBX_START_POLLERS=100"
-     - "ZBX_TIMEOUT=30"
+      - "ZBX_START_POLLERS=100"
+      - "ZBX_TIMEOUT=30"
     cpu_quota: 50000
-  
+
   zabbix-snmptraps:
     restart: unless-stopped
     image: zabbix/zabbix-snmptraps:alpine-4.0-latest
     container_name: zabbix-snmptraps
     ports:
-     - "162:162/udp"
+      - "162:162/udp"
     volumes:
-     - ./zabbix/snmptraps:/var/lib/zabbix/snmptraps:z
-     - ./zabbix/mibs:/var/lib/zabbix/mibs:z
+      - ./zabbix/snmptraps:/var/lib/zabbix/snmptraps:z
+      - ./zabbix/mibs:/var/lib/zabbix/mibs:z
