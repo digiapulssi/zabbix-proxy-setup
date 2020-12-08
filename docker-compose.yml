@@ -24,7 +24,6 @@ services:
       - zabbix-snmptraps
     env_file:
       - env.list
-    command: bash -c "${COMMAND}"
 
   zabbix-java-gateway:
     restart: unless-stopped
