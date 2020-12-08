@@ -27,7 +27,7 @@ services:
 
   zabbix-java-gateway:
     restart: unless-stopped
-    image: digiapulssi/zabbix-java-gateway:latest
+    image: zabbix/zabbix-java-gateway:alpine-5.0-latest
     container_name: zabbix-java-gateway
     environment:
       - "ZBX_START_POLLERS=100"
