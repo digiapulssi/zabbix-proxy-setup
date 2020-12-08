@@ -37,6 +37,10 @@ fi
 # Create PSK file
 echo "${PSK_KEY}" >"zabbix/enc/${PSK_FILE}"
 
+# Given the right rights
+chown 1997:1995  "zabbix/enc/${PSK_FILE}"
+chmod 0600  "zabbix/enc/${PSK_FILE}"
+
 # Setup environment options
 opt_replace ZBX_TLSCONNECT psk env.list
 opt_replace ZBX_TLSACCEPT psk env.list
