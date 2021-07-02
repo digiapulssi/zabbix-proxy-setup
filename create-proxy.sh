@@ -38,4 +38,7 @@ fi
 
 echo "Creating container [${NAME}] using image [${CONTAINER_IMAGE}:${CONTAINER_VERSION}]."
 
+touch zabbix/snmptraps/snmptraps.log
+chmod g+w zabbix/snmptraps/snmptraps.log
+
 docker-compose up --no-start
