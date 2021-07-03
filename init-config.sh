@@ -60,7 +60,7 @@ else
   echo "ZBX_SERVER_HOST=0.0.0.0/0" >>env.list
 fi
 echo "ZBX_CONFIGFREQUENCY=300" >>env.list
-echo "ZBX_CACHESIZE=120M" >>env.list
+echo "ZBX_CACHESIZE=600M" >>env.list
 echo "ZBX_STARTHTTPPOLLERS=10" >>env.list
 echo "ZBX_TIMEOUT=30" >>env.list
 echo "ZBX_JAVAGATEWAY_ENABLE=true" >>env.list
