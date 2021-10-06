@@ -6,6 +6,8 @@ function safe_mkdir {
     fi
 }
 
+echo "# NOTE: If you modify this file manually, make the corresponding changes to init-config.sh both locally and at https://github.com/digiapulssi/zabbix-proxy-setup/edit/master/init-config.sh" > env.list
+
 HOSTNAME=`hostname`
 
 read -p "Use hostname '${HOSTNAME}' for proxy hostname (Y/n)?" -n 1 -r
@@ -51,7 +53,7 @@ touch zabbix/odbc.ini
 
 echo "ubuntu-5.0.6" >zabbix/container.version
 
-echo "ZBX_HOSTNAME=${HOSTNAME}" >env.list
+echo "ZBX_HOSTNAME=${HOSTNAME}" >>env.list
 if [ -z "$PASSIVE_PROXY" ]; then
   echo "ZBX_SERVER_HOST=${SERVER_HOST}" >>env.list
   echo "ZBX_SERVER_PORT=${SERVER_PORT}" >>env.list
@@ -67,3 +69,5 @@ echo "ZBX_JAVAGATEWAY_ENABLE=true" >>env.list
 echo "ZBX_JAVAGATEWAYPORT=10052" >>env.list
 echo "ZBX_STARTJAVAPOLLERS=20" >>env.list
 echo "ZBX_STARTPOLLERSUNREACHABLE=20" >>env.list
+echo "ZBX_STARTPOLLERS=20" >>env.list
+echo "ZBX_STARTTRAPPERS=30" >>env.list
