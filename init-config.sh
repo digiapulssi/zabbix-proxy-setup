@@ -29,9 +29,7 @@ fi
 
 read -p "Enable SNMP traps (Y/n)?" -n 1 -r
 echo
-if [[ ${REPLY} =~ ^[nN]$ ]]; then
-  echo "ZBX_ENABLE_SNMP_TRAPS=false" >>env.list
-else
+if [[ ${REPLY} =~ ^[yY]$ ]]; then
   echo "ZBX_ENABLE_SNMP_TRAPS=true" >>env.list
 fi
 
@@ -53,23 +51,26 @@ touch zabbix/odbc.ini
 
 echo "ubuntu-5.0.6" >zabbix/container.version
 
-echo "ZBX_HOSTNAME=${HOSTNAME}" >>env.list
+echo "ZBX_HOSTNAME=${HOSTNAME}" >env.list
 if [ -z "$PASSIVE_PROXY" ]; then
   echo "ZBX_SERVER_HOST=${SERVER_HOST}" >>env.list
   echo "ZBX_SERVER_PORT=${SERVER_PORT}" >>env.list
 else
   echo "ZBX_PROXYMODE=1" >>env.list
-  echo "ZBX_SERVER_HOST=0.0.0.0/0" >>env.list
 fi
 echo "ZBX_CONFIGFREQUENCY=300" >>env.list
 echo "ZBX_CACHESIZE=1000M" >>env.list
-echo "ZBX_STARTHTTPPOLLERS=10" >>env.list
+echo "ZBX_STARTHTTPPOLLERS=20" >>env.list
 echo "ZBX_TIMEOUT=30" >>env.list
+echo "ZBX_ENABLE_SNMP_TRAPS=true" >>env.list
 echo "ZBX_JAVAGATEWAY_ENABLE=true" >>env.list
+echo "ZBX_JAVAGATEWAY=zabbix-java-gateway" >>env.list
 echo "ZBX_JAVAGATEWAYPORT=10052" >>env.list
 echo "ZBX_STARTJAVAPOLLERS=20" >>env.list
 echo "ZBX_STARTPOLLERSUNREACHABLE=20" >>env.list
-echo "ZBX_STARTPOLLERS=20" >>env.list
-echo "ZBX_STARTTRAPPERS=50" >>env.list
+echo "ZBX_STARTPOLLERS=50" >>env.list
+echo "ZBX_STARTTRAPPERS=50" >> env.list
 echo "ZBX_HISTORYINDEXCACHESIZE=20M" >>env.list
 echo "ZBX_HISTORYCACHESIZE=40M" >>env.list
+echo "ZBX_STARTDISCOVERERS=3" >> env.list
+echo "ZBX_STARTDBSYNCERS=6" >> env.list
